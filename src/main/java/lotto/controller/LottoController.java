@@ -2,12 +2,13 @@ package lotto.controller;
 
 import java.util.List;
 import lotto.domain.AmountToBuyLotto;
+import lotto.domain.LottoNumber;
+import lotto.domain.LottoNumberGenerator;
+import lotto.domain.LottoTicket;
 import lotto.domain.LottoTickets;
 import lotto.domain.ManualLottoCount;
 import lotto.domain.WinningNumbers;
 import lotto.domain.WinningResult;
-import lotto.domain.LottoNumber;
-import lotto.domain.LottoTicket;
 import lotto.view.InputView;
 import lotto.view.OutputView;
 
@@ -66,7 +67,7 @@ public class LottoController {
 
     private LottoNumber getBonusNumber() {
         try {
-            return LottoNumber.valueOf(InputView.inputBonusBall());
+            return LottoNumberGenerator.getLottoNumber(InputView.inputBonusBall());
         } catch (IllegalArgumentException e) {
             OutputView.printException(e);
             return getBonusNumber();
