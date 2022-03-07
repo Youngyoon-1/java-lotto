@@ -2,7 +2,6 @@ package lotto.domain;
 
 import static lotto.domain.LottoNumber.MAX;
 import static lotto.domain.LottoNumber.MIN;
-import static lotto.domain.LottoNumberGenerator.LottoNumbersCache.cache;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,23 +12,22 @@ class LottoNumberGenerator {
     private static final int FROM_INDEX = 0;
 
     private LottoNumberGenerator() {
-
     }
 
     static LottoNumber getLottoNumber(int lottoNumber) {
-        return cache.stream()
+        return LottoNumbersCache.cache.stream()
                 .filter(cachedLottoNumber -> cachedLottoNumber.isSameNumber(lottoNumber))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(NUMBER_RANGE_ERROR));
     }
 
     static List<LottoNumber> getShuffledNumbers(int lottoNumberCount) {
-        List<LottoNumber> candidateNumbers = new ArrayList<>(cache);
+        List<LottoNumber> candidateNumbers = new ArrayList<>(LottoNumbersCache.cache);
         Collections.shuffle(candidateNumbers);
         return new ArrayList<>(candidateNumbers.subList(FROM_INDEX, lottoNumberCount));
     }
 
-    static class LottoNumbersCache {
+    private static class LottoNumbersCache {
         private static final String NOT_INSTANTIATION_ERROR = "LottoNumbersCache 객체를 생성할 수 없습니다.";
 
         static final List<LottoNumber> cache;
