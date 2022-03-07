@@ -14,10 +14,6 @@ public final class LottoNumber {
         this.value = lottoNumber;
     }
 
-    public static LottoNumber valueOf(int lottoNumber) {
-        return LottoNumberGenerator.getLottoNumber(lottoNumber);
-    }
-
     boolean isSameNumber(int lottoNumber) {
         return value == lottoNumber;
     }

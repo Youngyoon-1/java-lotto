@@ -41,7 +41,7 @@ public class LottoTicketTest {
     @DisplayName("로또 티켓이 매개변수의 로또번호를 포함하는지 테스트")
     void isContains(int lottoNumber, boolean expected) {
         final LottoTicket myLottoTicket = new LottoTicket("1,2,3,4,5,6");
-        final LottoNumber otherLottoNumber = LottoNumber.valueOf(lottoNumber);
+        final LottoNumber otherLottoNumber = LottoNumberGenerator.getLottoNumber(lottoNumber);
 
         assertThat(myLottoTicket.isContains(otherLottoNumber)).isEqualTo(expected);
     }

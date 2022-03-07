@@ -20,7 +20,7 @@ public final class LottoTicket {
         return LottoNumberGenerator.getShuffledNumbers(LOTTO_NUMBER_COUNT);
     }
 
-    public static LottoTicket generateRandom() {
+    static LottoTicket generateRandom() {
         return new LottoTicket();
     }
 
@@ -52,7 +52,7 @@ public final class LottoTicket {
     private List<LottoNumber> generateLottoNumbers(String[] parsedLottoNumbers) {
         return Arrays.stream(parsedLottoNumbers)
                 .map(Integer::parseInt)
-                .map(LottoNumber::valueOf)
+                .map(LottoNumberGenerator::getLottoNumber)
                 .collect(Collectors.toUnmodifiableList());
     }
 
