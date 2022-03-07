@@ -1,38 +1,38 @@
 package lotto.domain;
 
-import static lotto.domain.Ranking.Constants.FIFTH_PLACE_HIT_COUNT;
-import static lotto.domain.Ranking.Constants.FIRST_PLACE_HIT_COUNT;
-import static lotto.domain.Ranking.Constants.FOURTH_PLACE_HIT_COUNT;
-import static lotto.domain.Ranking.Constants.SECOND_THIRD_PLACE_HIT_COUNT;
-
 import java.util.Arrays;
 import java.util.function.BiPredicate;
 
 public enum Ranking {
-    FIRST_PLACE(2000000000, FIRST_PLACE_HIT_COUNT, (hitCount1, hasBonusNumber) -> hitCount1 == FIRST_PLACE_HIT_COUNT),
-    SECOND_PLACE(30000000, SECOND_THIRD_PLACE_HIT_COUNT,
-            (hitCount, hasBonusNumber) -> hitCount == SECOND_THIRD_PLACE_HIT_COUNT && hasBonusNumber),
-    THIRD_PLACE(1500000, SECOND_THIRD_PLACE_HIT_COUNT,
-            (hitCount, hasBonusNumber) -> hitCount == SECOND_THIRD_PLACE_HIT_COUNT && !hasBonusNumber),
-    FOURTH_PLACE(50000, FOURTH_PLACE_HIT_COUNT, (hitCount, hasBonusNumber) -> hitCount == FOURTH_PLACE_HIT_COUNT),
-    FIFTH_PLACE(5000, FIFTH_PLACE_HIT_COUNT, (hitCount, hasBonusNumber) -> hitCount == FIFTH_PLACE_HIT_COUNT),
-    NONE_PLACE(0, 0, (hitCount, hasBonusNumber) -> hitCount < FIFTH_PLACE_HIT_COUNT);
+    FIRST_PLACE(2000000000, Constants.FIRST_PLACE_HIT_COUNT,
+            (hitCount, hasBonusNumber) -> hitCount == Constants.FIRST_PLACE_HIT_COUNT),
+    SECOND_PLACE(30000000, Constants.SECOND_THIRD_PLACE_HIT_COUNT,
+            (hitCount, hasBonusNumber) -> hitCount == Constants.SECOND_THIRD_PLACE_HIT_COUNT && hasBonusNumber),
+    THIRD_PLACE(1500000, Constants.SECOND_THIRD_PLACE_HIT_COUNT,
+            (hitCount, hasBonusNumber) -> hitCount == Constants.SECOND_THIRD_PLACE_HIT_COUNT && !hasBonusNumber),
+    FOURTH_PLACE(50000, Constants.FOURTH_PLACE_HIT_COUNT,
+            (hitCount, hasBonusNumber) -> hitCount == Constants.FOURTH_PLACE_HIT_COUNT),
+    FIFTH_PLACE(5000, Constants.FIFTH_PLACE_HIT_COUNT,
+            (hitCount, hasBonusNumber) -> hitCount == Constants.FIFTH_PLACE_HIT_COUNT),
+    NONE_PLACE(0, 0,
+            (hitCount, hasBonusNumber) -> hitCount < Constants.FIFTH_PLACE_HIT_COUNT);
 
+    private static final String ERROR_HIT_COUNT_OVER_THRESHOLD = "최대 맞은 개수는 6개 입니다.";
     private final int prize;
     private final int hitCount;
-    private final BiPredicate<Integer, Boolean> biPredicate;
+    private final BiPredicate<Integer, Boolean> mapper;
 
-    Ranking(int prize, int count, BiPredicate<Integer, Boolean> biPredicate) {
+    Ranking(int prize, int hitCount, BiPredicate<Integer, Boolean> mapper) {
         this.prize = prize;
-        this.hitCount = count;
-        this.biPredicate = biPredicate;
+        this.hitCount = hitCount;
+        this.mapper = mapper;
     }
 
     public static Ranking of(int hitCount, boolean hasBonusNumber) {
         return Arrays.stream(Ranking.values())
-                .filter(ranking -> ranking.biPredicate.test(hitCount, hasBonusNumber))
+                .filter(ranking -> ranking.mapper.test(hitCount, hasBonusNumber))
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new IllegalArgumentException(ERROR_HIT_COUNT_OVER_THRESHOLD));
     }
 
     public long multiplyPrizeWithCount(int count) {
@@ -51,10 +51,10 @@ public enum Ranking {
         return prize;
     }
 
-    static class Constants {
-        static final int FIRST_PLACE_HIT_COUNT = 6;
-        static final int SECOND_THIRD_PLACE_HIT_COUNT = 5;
-        static final int FOURTH_PLACE_HIT_COUNT = 4;
-        static final int FIFTH_PLACE_HIT_COUNT = 3;
+    private static final class Constants {
+        private static final int FIRST_PLACE_HIT_COUNT = 6;
+        private static final int SECOND_THIRD_PLACE_HIT_COUNT = 5;
+        private static final int FOURTH_PLACE_HIT_COUNT = 4;
+        private static final int FIFTH_PLACE_HIT_COUNT = 3;
     }
 }
